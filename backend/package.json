@@ -1,0 +1,48 @@
+{
+  "name": "searchmind",
+  "version": "1.0.0",
+  "description": "Parte backend da aplicação searchmind",
+  "main": "app.js",
+  "scripts": {
+    "start": "npx tsc && node ./dist/app.js",
+    "dev": "ts-node-dev app.ts"
+  },
+  "keywords": [
+    "cronjob",
+    "express",
+    "cors",
+    "web-push",
+    "jwt",
+    "twilio",
+    "password.js"
+  ],
+  "author": "lkt",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^5.16.2",
+    "bcrypt": "^5.1.1",
+    "cors": "^2.8.5",
+    "cron": "^3.1.7",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.17",
+    "@types/cron": "^2.4.0",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/passport": "^1.0.16",
+    "@types/passport-jwt": "^4.0.1",
+    "@types/passport-local": "^1.0.38",
+    "prisma": "^5.16.2",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0",
+    "typescript": "^5.5.3"
+  }
+}
