@@ -15,24 +15,24 @@ router.post("/question", async (request: Request, response: Response) => {
     response.status(200).send(await controller.createQuestion(email))
 });
 
-router.get("/question", (request: Request, response: Response) => {
+router.get("/question", async (request: Request, response: Response) => {
     const email = (request.user as any).email;
     const uid = request.query.uid?.toString();
-    response.status(200).send(controller.getQuestion(email, uid))
+    response.status(200).send(await controller.getQuestion(email, uid))
 });
 
-router.post("/response", (request: Request, response: Response) => {
+router.post("/response", async (request: Request, response: Response) => {
     const email = (request.user as any).email;
     const uid = request.query.uid?.toString();
-    if (!uid) throw new Error("No receve Uid parameter");
+    if (!uid) throw new Error("No receive uid parameter");
     const { words } = request.body;
     if (!words) throw new Error("Responses is empty");
-    response.status(200).send(controller.response(email, uid, words))
+    response.status(200).send(await controller.response(email, uid, words))
 });
 
-router.get("/history", (request: Request, response: Response) => {
+router.get("/history", async (request: Request, response: Response) => {
     const email = (request.user as any).email;
-    response.status(200).send(controller.history(email))
+    response.status(200).send(await controller.history(email))
 });
 
 export default router;

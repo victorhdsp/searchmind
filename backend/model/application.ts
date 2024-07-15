@@ -1,59 +1,74 @@
-import db from "../database/db";
-import crypto from "crypto"
+import { PrismaClient } from "@prisma/client";
 
-function createQuestion(email: string, words: string[]) {
-    const user = db.find((user) => user.email === email);
-    if (!user) throw new Error("User is net exist");
-    const question = {
-        uid: crypto.randomUUID(),
-        date: new Date().toDateString(),
-        words,
-        is_visible: false
-    }
-    user.questions.push(question)
+const prisma = new PrismaClient();
+
+async function createQuestion(email: string, words: string[]) {
+    const user = await prisma.user.findUnique({where:{email}});
+    if (!user) throw new Error("User is not exist");
+    const question = await prisma.question.create({
+        data: {
+            user_uid: user.uid,
+            words,
+        }
+    })
     return question
 }
 
-function changeVisibilityOnQuestion(email: string, uid: string) {
-    const user = db.find((user) => user.email === email);
-    if (!user) throw new Error("User is net exist");
-    const question = user.questions.find((question) => question.uid === uid);
+async function changeVisibilityOnQuestion(email: string, uid: string) {
+    const user = await prisma.user.findUnique({where:{email}});
+    if (!user) throw new Error("User is not exist");
+    const question = await prisma.question.update({
+        where:{uid},
+        data: {is_visible: true}
+    });
     if (!question) throw new Error("This question not exist");
-    question.is_visible = true;
     return question
 }
 
-function getQuestion(email: string, uid?: string) {
-    const user = db.find((user) => user.email === email);
-    if (!user) throw new Error("User is net exist");
+async function getQuestion(email: string, uid?: string) {
+    const user = await prisma.user.findUnique({where:{email}});
+    if (!user) throw new Error("User is not exist");
     let question = null
     if (uid) {
-        question = user.questions.find((question) => question.uid === uid);
+        question = await prisma.question.findUnique({
+            where:{
+                user_uid: user.uid,
+                uid
+            }
+        });
     } else {
-        question = user.questions[user.questions.length - 1]
+        question = await prisma.question.findFirst({
+            where: { user_uid: user.uid },
+            orderBy: { date: "asc" }});
     }
     if (!question) throw new Error("This question not exist");
     return question
 }
 
-function response(email: string, question_uid: string, words: string[], hit_rate: number) {
-    const user = db.find((user) => user.email === email);
-    if (!user) throw new Error("User is net exist");
-    const question = user.questions.find((question) => question.uid === question_uid);
+async function response(email: string, question_uid: string, words: string[], hit_rate: number) {
+    const user = await prisma.user.findUnique({where:{email}});
+    if (!user) throw new Error("User is not exist");
+    const question = await prisma.question.findUnique({where:{uid: question_uid}});
     if (!question) throw new Error("This question not exist");
-    const response = {
-        uid: crypto.randomUUID(),
-        question_uid,
-        words,
-        hit_rate
-    };
-    user.responses.push(response);
+    const response = await prisma.response.create({
+        data: {
+            user_uid: user.uid,
+            question_uid: question.uid,
+            words,
+            hit_rate
+        }
+    })
     return response;
 }
 
-function history(email: string) {
-    const user = db.find((user) => user.email === email);
-    if (!user) throw new Error("User is net exist");
+async function history(email: string) {
+    const user = await prisma.user.findUnique({
+        where:{email},
+        include: {
+            responses: true
+        }
+    });
+    if (!user) throw new Error("User is not exist");
     return user.responses;
 }
 

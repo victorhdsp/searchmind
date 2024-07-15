@@ -16,9 +16,9 @@ const login = new localStrategy({
     usernameField: 'email',
     passwordField: 'password'
   },
-  (email, password, done) => {
+  async (email, password, done) => {
     try {
-        const user = model.login(email);
+        const user = await model.login(email);
         const hasCorrectPassword = bcrypt.compareSync(password, user.password);
         if (!hasCorrectPassword) throw new Error("Email or Password is wrong");
         return done(null, {
@@ -34,10 +34,10 @@ const resetPassword = new localStrategy({
     usernameField: 'email',
     passwordField: 'password'
   },
-  (email, password, done) => {
+  async (email, password, done) => {
     try {
         const hashedPassword = bcrypt.hashSync(password, 10)
-        const user = model.resetPassword(email, hashedPassword);
+        const user = await model.resetPassword(email, hashedPassword);
 
         return done(null, {
             email: user.email,
@@ -52,10 +52,10 @@ const signup = new localStrategy({
     usernameField: 'email',
     passwordField: 'password'
   },
-  (email, password, done) => {
+  async (email, password, done) => {
     try {
         const hashedPassword = bcrypt.hashSync(password, 10)
-        const user = model.signup(email, hashedPassword);
+        const user = await model.signup(email, hashedPassword);
 
         return done(null, {
             email: user.email,

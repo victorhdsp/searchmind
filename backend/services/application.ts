@@ -12,7 +12,8 @@ async function startSeason(email:string) {
 }
 
 async function generateQuestionJobs(email:string) {
-    model.login(email).config.questionHours.forEach((time) => {
+    const user = await model.login(email)
+    user.config?.question_hours.forEach((time) => {
         const cronTime = `${time.split(":")[1]} ${time.split(":")[0]} * * *`
         const questionJob = CronJob.from({
             cronTime,

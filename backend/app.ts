@@ -5,6 +5,7 @@ import cors from "cors";
 import router from "./routes";
 import errorHandle from "./middleware/errorHandle";
 import "./auth/passport";
+import "./prisma";
 
 const app = express();
 

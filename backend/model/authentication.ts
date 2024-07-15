@@ -1,32 +1,48 @@
-import db from "../database/db"
+import { PrismaClient } from "@prisma/client";
 
-function login(email:string) {
-    const user = db.find((user) => user.email === email)
+const prisma = new PrismaClient();
+
+async function login(email:string) {
+    const user = await prisma.user.findUnique({
+        where: {email},
+        include: {
+            config: true,
+            questions: true,
+            responses: true
+        }
+    });
     if (!user) throw new Error("User not exist");
     return user
 }
 
-function resetPassword(email:string, password: string) {
-    const user = db.find((user) => user.email === email)
+async function resetPassword(email:string, password: string) {
+    const user = await prisma.user.update({
+        where: { email },
+        data: { password }
+    })
     if (!user) throw new Error("User not exist");
-    user.password = password;
     return user
 }
 
-function signup(email:string, password: string) {
-    let user = db.find((user) => user.email === email)
+async function signup(email:string, password: string) {
+    let user = await prisma.user.findUnique({where: {email}});
     if (user) throw new Error("User already exist");
-    db.push({
-        uid: "123",
-        email,
-        password,
-        questions: [],
-        responses: [],
-        config: {
-            questionHours: ["13:00"]
+    user = await prisma.user.create({
+        data: {
+            email,
+            password,
+            config: {
+                create: {
+                    question_hours: ["13:00"]
+                }
+            }
+        },
+        include: {
+            config: true,
+            questions: true,
+            responses: true
         }
     })
-    user = db.find((user) => user.email === email)
     if (!user) throw new Error("Error to create user");
     return user
 }
