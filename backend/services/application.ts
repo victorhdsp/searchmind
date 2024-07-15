@@ -5,8 +5,8 @@ import model from "../model/authentication"
 async function startSeason(email:string) {
     const question = await controller.createQuestion(email)
     
-    setTimeout(() => {
-        const _question = controller.changeVisibilityOnQuestion(email, question.uid);
+    setTimeout(async () => {
+        const _question = await controller.changeVisibilityOnQuestion(email, question.uid);
         console.log(_question); //Chamar a notificação
     }, 1000 * 60 * 5)
 }
