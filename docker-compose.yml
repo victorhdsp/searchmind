@@ -21,3 +21,13 @@ services:
       - ./backend:/opt/app
     environment:
       DATABASE_URL: "postgresql://admin:admin@db:5432/searchmind?schema=public"
+
+  frontend:
+    build:
+      context: ./frontend
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/opt/app
