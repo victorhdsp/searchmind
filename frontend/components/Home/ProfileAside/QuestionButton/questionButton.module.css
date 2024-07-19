@@ -1,0 +1,19 @@
+.box {
+    @apply  flex justify-center p-14
+            border-2 border-dashed rounded-3xl
+            text-center
+            mt-auto;
+}
+
+.no-question {
+    @apply  
+            bg-zinc-100
+            border-zinc-200
+            text-zinc-400;
+}
+
+.question {
+    @apply  bg-background-alt
+            border-background-alt
+            text-primary-foreground;
+}
