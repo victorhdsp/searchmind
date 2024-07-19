@@ -23,7 +23,7 @@ export default function RootLayout({
   return (
     <html lang="pt-br">
       <body className={cn(
-          "min-h-screen bg-foreground font-sans antialiased",
+          "min-h-screen bg-background-alt font-sans antialiased",
           fontSans.variable
         )}>
         {children}
