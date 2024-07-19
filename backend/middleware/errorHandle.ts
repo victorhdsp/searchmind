@@ -1,7 +1,7 @@
 import { ErrorRequestHandler } from "express";
 
-const errorHandle: ErrorRequestHandler = (error: Error, request, response, next) => {
-    response.status(500).send({ error: error.message })
+const ErrorHandle: ErrorRequestHandler = (error: Error, request, response, next) => {
+    response.status(500).send(error.message)
 }
 
-export default errorHandle;
+export default ErrorHandle;

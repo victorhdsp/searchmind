@@ -48,7 +48,10 @@ async function getQuestion(email: string, uid?: string) {
 async function response(email: string, question_uid: string, words: string[], hit_rate: number) {
     const user = await prisma.user.findUnique({where:{email}});
     if (!user) throw new Error("User is not exist");
-    const question = await prisma.question.findUnique({where:{uid: question_uid}});
+    const question = await prisma.question.update({
+        where:{ uid: question_uid },
+        data: { is_visible: false }
+    });
     if (!question) throw new Error("This question not exist");
     const response = await prisma.response.create({
         data: {
@@ -69,7 +72,7 @@ async function history(email: string) {
         }
     });
     if (!user) throw new Error("User is not exist");
-    return user.responses;
+    return { history: user.responses };
 }
 
 export default {

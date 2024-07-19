@@ -36,7 +36,7 @@ async function changeVisibilityOnQuestion(email: string, uid: string) {
 async function getQuestion(email: string, uid?: string) {
     const question = await model.getQuestion(email, uid);
     if (!uid && question.is_visible == false) {
-        throw new Error("Unnamed question is invisible")
+        throw new Error("Question is invisible")
     }
     return question;
 }
