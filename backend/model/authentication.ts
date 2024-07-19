@@ -11,7 +11,7 @@ async function login(email:string) {
             responses: true
         }
     });
-    if (!user) throw new Error("User not exist");
+    if (!user) throw new Error("Email or Password is wrong");
     return user
 }
 
