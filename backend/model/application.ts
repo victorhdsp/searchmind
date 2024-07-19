@@ -11,7 +11,7 @@ async function createQuestion(email: string, words: string[]) {
             words,
         }
     })
-    return {question}
+    return question
 }
 
 async function changeVisibilityOnQuestion(email: string, uid: string) {
@@ -22,7 +22,7 @@ async function changeVisibilityOnQuestion(email: string, uid: string) {
         data: {is_visible: true}
     });
     if (!question) throw new Error("This question not exist");
-    return {question}
+    return question
 }
 
 async function getQuestion(email: string, uid?: string) {
@@ -42,7 +42,7 @@ async function getQuestion(email: string, uid?: string) {
             orderBy: { date: "asc" }});
     }
     if (!question) throw new Error("This question not exist");
-    return {question}
+    return question
 }
 
 async function response(email: string, question_uid: string, words: string[], hit_rate: number) {
@@ -61,7 +61,7 @@ async function response(email: string, question_uid: string, words: string[], hi
             hit_rate
         }
     })
-    return {response};
+    return response;
 }
 
 async function history(email: string) {
@@ -72,7 +72,7 @@ async function history(email: string) {
         }
     });
     if (!user) throw new Error("User is not exist");
-    return { history: user.responses };
+    return user.responses;
 }
 
 export default {

@@ -12,7 +12,8 @@ router.all("/*",
 router.post("/question", async (request, response, next) => {
     try {
         const email = (request.user as any).email;
-        response.status(200).send(await controller.createQuestion(email))
+        const question = await controller.createQuestion(email)
+        response.status(200).json({question})
     } catch (error:any) {
         next(new Error(error.message));
     }
@@ -22,7 +23,8 @@ router.get("/question", async (request, response, next) => {
     try {
         const email = (request.user as any).email;
         const uid = request.query.uid?.toString();
-        response.status(200).send(await controller.getQuestion(email, uid))
+        const question = await controller.getQuestion(email, uid)
+        response.status(200).json({question})
     } catch (error:any) {
         next(new Error(error.message));
     }
@@ -35,7 +37,8 @@ router.post("/response", async (request, response, next) => {
         if (!uid) throw new Error("No receive uid parameter");
         const { words } = request.body;
         if (!words) throw new Error("Responses is empty");
-        response.status(200).send(await controller.response(email, uid, words))
+        const _response = await controller.response(email, uid, words)
+        response.status(200).json({response: _response})
     } catch (error:any) {
         next(new Error(error.message));
     }
@@ -44,7 +47,8 @@ router.post("/response", async (request, response, next) => {
 router.get("/history", async (request, response,next) => {
     try {
         const email = (request.user as any).email;
-        response.status(200).send(await controller.history(email))
+        const history = await controller.history(email)
+        response.status(200).json({history})
     } catch (error:any) {
         next(new Error(error.message));
     }

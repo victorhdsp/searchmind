@@ -36,7 +36,7 @@ async function changeVisibilityOnQuestion(email: string, uid: string) {
 async function getQuestion(email: string, uid?: string) {
     const question = await model.getQuestion(email, uid);
     if (!uid && question.is_visible == false) {
-        throw new Error("Question is invisible")
+        throw new Error("No has question for you")
     }
     return question;
 }
@@ -48,8 +48,8 @@ async function response(email: string, question_uid: string, words: string[]) {
 }
 
 async function history(email: string) {
-    const responses = await model.history(email);
-    return responses;
+    const history = await model.history(email);
+    return history;
 }
 
 export default {
