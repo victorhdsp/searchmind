@@ -28,8 +28,12 @@ async function createQuestion(email: string) {
     return question;
 }
 
-async function changeVisibilityOnQuestion(email: string, uid: string) {
-    const question = await model.changeVisibilityOnQuestion(email, uid);
+async function readedQuestion(email: string, uid: string, minutes:number) {
+    const question = await model.thisQuestionIsInvisible(email, uid);
+
+    setTimeout(async () => {
+        await model.thisQuestionIsAnswer(email, uid);
+    }, 1000 * 60 * minutes)
     return question;
 }
 
@@ -54,7 +58,7 @@ async function history(email: string) {
 
 export default {
     createQuestion,
-    changeVisibilityOnQuestion,
+    readedQuestion,
     getQuestion,
     response,
     history
