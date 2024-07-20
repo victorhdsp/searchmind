@@ -2,15 +2,6 @@ import { CronJob } from "cron";
 import controller from "../controllers/application";
 import model from "../model/authentication"
 
-async function startSeason(email:string) {
-    const question = await controller.createQuestion(email)
-    
-    setTimeout(async () => {
-        const _question = await controller.changeVisibilityOnQuestion(email, question.uid);
-        console.log(_question); //Chamar a notificação
-    }, 1000 * 60 * 5)
-}
-
 async function generateQuestionJobs(email:string) {
     const user = await model.login(email)
     user.config?.question_hours.forEach((time) => {
@@ -18,7 +9,7 @@ async function generateQuestionJobs(email:string) {
         const questionJob = CronJob.from({
             cronTime,
             onTick: async () => {
-                await startSeason(email)
+                await controller.createQuestion(email)
                 questionJob.stop()
             },
             start: true
@@ -28,7 +19,7 @@ async function generateQuestionJobs(email:string) {
 }
 
 async function createInitialQuestions(email:string) {
-    await startSeason(email);
+    await controller.createQuestion(email)
     await generateQuestionJobs(email);
 }
 

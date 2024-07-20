@@ -28,7 +28,8 @@ model Question {
   uid        String   @id @default(uuid())
   date       DateTime @default(now())
   words      String[] @default([])
-  is_visible Boolean  @default(false)
+  is_visible Boolean  @default(true)
+  is_answer  Boolean  @default(false)
 
   Response Response?
 }
