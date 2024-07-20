@@ -1,13 +1,15 @@
 import express, {NextFunction, Request, Response} from "express";
-import controller from "../controllers/authentication";
-import application from "../services/application";
+import AuthenticationController from "../controllers/authentication";
+import CronJobService from "../model/cronjob";
 import passport from "passport";
 
 const router = express.Router();
+const authenticationController = new AuthenticationController()
+const cronJobService = new CronJobService()
 
 router.post("/*", (request: Request, response: Response, next: NextFunction) => {
     const { email, password } = request.body;
-    controller.hasAllInformation(email, password);
+    authenticationController.hasAllInformation(email, password);
     next()
 });
 
@@ -26,7 +28,7 @@ router.post("/resetPassword",
 router.post("/signup", 
     passport.authenticate("signup", { session: false }),
     async (request: Request, response: Response) => {
-        await application.createInitialQuestions((request.user as any).email)
+        await cronJobService.createInitialQuestions((request.user as any).email)
         response.status(200).send({user: request.user});
 });
 
