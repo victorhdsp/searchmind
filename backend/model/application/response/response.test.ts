@@ -1,5 +1,5 @@
-import ApplicationService from './index';
-import mocks, { PrismaMock } from './mocks';
+import ResponseService from './index';
+import mocks, { PrismaMock } from '../mocks';
 import { describe, expect, test } from '@jest/globals';
 import { PrismaClient } from '@prisma/client';
 
@@ -7,13 +7,13 @@ jest.mock("@prisma/client", () => (
     {PrismaClient: jest.fn(() => mocks.prismaClient)}
 ));
 
-describe('ApplicationService', () => {
-    let applicationService: ApplicationService;
+describe('ResponseService', () => {
+    let responseService: ResponseService;
     let prismaMock: PrismaMock;
 
     beforeEach(() => {
-        applicationService = new ApplicationService();
         prismaMock = new PrismaClient() as unknown as PrismaMock;
+        responseService = new ResponseService(prismaMock as any as PrismaClient);
     });
 
     afterEach(() => {
@@ -38,7 +38,7 @@ describe('ApplicationService', () => {
             prismaMock.question.update.mockResolvedValue(mocks.question);
             prismaMock.response.create.mockResolvedValue(mocks.response)
 
-            const result = await applicationService.response(
+            const result = await responseService.sendResponse(
                 email, question_id, words, hit_rate
             );
             expect(expected).toEqual(result);
@@ -63,7 +63,7 @@ describe('ApplicationService', () => {
             prismaMock.user.findUnique.mockResolvedValue(mocks.user);
             prismaMock.question.update.mockResolvedValue(null);
 
-            const result = applicationService.response(
+            const result = responseService.sendResponse(
                 email, question_id, words, hit_rate
             );
 
@@ -77,7 +77,7 @@ describe('ApplicationService', () => {
         test("should throw error User is not exist", async () => {
             prismaMock.user.findUnique.mockResolvedValue(null);
 
-            const result = applicationService.response(
+            const result = responseService.sendResponse(
                 email, question_id, words, hit_rate
             );
 
@@ -92,7 +92,7 @@ describe('ApplicationService', () => {
         test("should return to response data", async () => {
             prismaMock.user.findUnique.mockResolvedValue(mocks.user);
 
-            await applicationService.history(email)
+            await responseService.history(email)
             expect(prismaMock.user.findUnique).toHaveBeenCalledWith({
                 where:{ email },
                 include: {
@@ -104,7 +104,7 @@ describe('ApplicationService', () => {
         test("should throw error User is not exist", async () => {
             prismaMock.user.findUnique.mockResolvedValue(null);
 
-            const result = applicationService.history(email);
+            const result = responseService.history(email);
 
             await expect(result).rejects.toThrow("User is not exist");
             expect(prismaMock.user.findUnique).toHaveBeenCalledWith({

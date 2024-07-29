@@ -1,4 +1,5 @@
 import { PrismaClient } from "@prisma/client";
+import ErrorMessage from "../../libs/ErrorMessage";
 
 class UserService {
     private prisma: PrismaClient;
@@ -16,7 +17,7 @@ class UserService {
                 responses: true
             }
         });
-        if (!user) throw new Error("Email or Password is wrong");
+        if (!user) throw new Error(ErrorMessage.emailOrPasswordWrong);
         return user
     }
 
@@ -25,13 +26,13 @@ class UserService {
             where: { email },
             data: { password }
         })
-        if (!user) throw new Error("User is not exist");
+        if (!user) throw new Error(ErrorMessage.userNotExist);
         return user
     }
 
     async signup(email:string, password: string) {
         let user = await this.prisma.user.findUnique({where: {email}});
-        if (user) throw new Error("User already exist");
+        if (user) throw new Error(ErrorMessage.userAlreadyExist);
         user = await this.prisma.user.create({
             data: {
                 email,
@@ -48,7 +49,7 @@ class UserService {
                 responses: true
             }
         })
-        if (!user) throw new Error("Error to create user");
+        if (!user) throw new Error(ErrorMessage.errorToCreateUser);
         return user
     }
 }

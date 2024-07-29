@@ -16,8 +16,6 @@ const mPrismaClient: PrismaMock = {
     }
 };
 
-const startedProjectDate = new Date("09/07/24")
-
 const mockUser: User = {
     uid: "unique_user_id",
     email: "email@example.com",

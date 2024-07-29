@@ -1,6 +1,6 @@
 import { CronJob } from "cron";
-import ApplicationController from "../../controllers/application";
-import AuthentitcationService from "../authentication"
+import ApplicationController from "./application";
+import AuthentitcationService from "../model/authentication"
 
 class CronJobService {
     private authentitcationService: AuthentitcationService;
@@ -32,6 +32,4 @@ class CronJobService {
         await this.generateQuestionJobs(email);
     }
 }
-
-
 export default CronJobService;

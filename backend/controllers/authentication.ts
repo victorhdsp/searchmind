@@ -2,6 +2,7 @@ import AuthenticationService from "../model/authentication";
 import jwt from "jsonwebtoken";
 import { Strategy as localStrategy } from "passport-local";
 import bcrypt from "bcrypt";
+import ErrorMessage from "../libs/ErrorMessage";
 
 class AuthenticationController {
     private model: AuthenticationService;
@@ -13,12 +14,12 @@ class AuthenticationController {
     }
     
     jwtSign(email: string) {
-        return jwt.sign({email}, this.jwtSecretKey, { expiresIn: '1h' });
+        return jwt.sign({email}, this.jwtSecretKey, { expiresIn: '1d' });
     }
     
     hasAllInformation(email: string, password: string) {
-        if (!email) throw new Error ("Email is empty");
-        if (!password) throw new Error ("Password is empty");
+        if (!email) throw new Error (ErrorMessage.emailEmpty);
+        if (!password) throw new Error (ErrorMessage.passwordEmpty);
     }
     
     login() {
@@ -30,7 +31,7 @@ class AuthenticationController {
             try {
                 const user = await this.model.login(email);
                 const hasCorrectPassword = bcrypt.compareSync(password, user.password);
-                if (!hasCorrectPassword) throw new Error("Email or Password is wrong");
+                if (!hasCorrectPassword) throw new Error(ErrorMessage.emailOrPasswordWrong);
                 return done(null, {
                     email: user.email,
                     token: this.jwtSign(user.email)
@@ -79,6 +80,20 @@ class AuthenticationController {
                 done(error);
             }
         })
+    }
+
+    async resetToken(email: string) { 
+        try {
+            const user = await this.model.login(email);
+            return {
+                email: user.email,
+                token: this.jwtSign(user.email)
+            };
+        } catch (error: any) {
+            const err: Error = error;
+            throw new Error(err.message);
+            
+        }
     }
 }
 
