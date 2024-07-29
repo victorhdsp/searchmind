@@ -82,9 +82,93 @@ async function getQuestion(uid?:string) {
     }
 }
 
+async function readedQuestion(uid:string) {
+    const token = cookies.get("authToken");
+    if (!headers.has("Authorization"))
+        headers.append("Authorization", "Bearer "+token);
+    try {
+        const response = await fetch(HOST+"/app/readedQuestion?uid="+uid, 
+            { method: "GET", headers }
+        )
+        if (response.ok) {
+            const json = await response.json()
+            return { status: true, question: json.question };
+        } else {
+            throw new Error(await response.text());
+        }
+    } catch (error:any) {
+        let err: Error = error
+        return { status: false, error: err.message }
+    }
+}
+
+async function sendResponse(uid:string, words: string[]) {
+    const token = cookies.get("authToken");
+    const body = JSON.stringify({ words });
+    if (!headers.has("Authorization"))
+        headers.append("Authorization", "Bearer "+token);
+    try {
+        const response = await fetch(HOST+"/app/response?uid="+uid, 
+            { method: "POST", headers, body }
+        )
+        if (response.ok) {
+            const json = await response.json()
+            return { status: true, question: json.question };
+        } else {
+            throw new Error(await response.text());
+        }
+    } catch (error:any) {
+        let err: Error = error
+        return { status: false, error: err.message }
+    }
+}
+
+async function resetToken() {
+    const token = cookies.get("authToken");
+    if (!headers.has("Authorization"))
+        headers.append("Authorization", "Bearer "+token);
+    try {
+        const response = await fetch(HOST+"/auth/resetToken", { method: "GET", headers })
+        if (response.ok) {
+            const json = await response.json()
+            const user = json.user
+            cookies.set("authToken", user.token, 1);
+            return { status: true };
+        } else {
+            throw new Error(await response.text());
+        }
+    } catch (error:any) {
+        let err: Error = error
+        return { status: false, error: err.message }
+    }
+}
+
+async function getSettings() {
+    const token = cookies.get("authToken");
+    if (!headers.has("Authorization"))
+        headers.append("Authorization", "Bearer "+token);
+    try {
+        const response = await fetch(HOST+"/settings/getSettings", { method: "GET", headers });
+        if (response.ok) {
+            const json = await response.json();
+            const settings = json.settings;
+            return { status: true, settings }
+        } else {
+            throw new Error(await response.text())
+        }
+    } catch (error:any) {
+        const err: Error = error;
+        return { status: false, error: err.message }
+    }
+}
+
 export default {
     signup,
     signin,
     getHistory,
-    getQuestion
+    getQuestion,
+    readedQuestion,
+    sendResponse,
+    resetToken,
+    getSettings
 }

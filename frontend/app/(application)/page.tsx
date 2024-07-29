@@ -1,30 +1,18 @@
 "use client";
 
 import ProfileAside from "@/components/Home/ProfileAside";
-import { useToast } from "@/components/ui/use-toast";
-import api from "@/lib/api";
-import { useRouter } from "next/navigation";
+import ProfileSettings from "@/components/Home/ProfileSettings";
 import { useEffect, useState } from "react";
+import { QuestionInterface } from "@/types/application";
+import api from "@/lib/api";
 
 export default function Home() {
-  const {toast} = useToast();
-  const router = useRouter();
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState<QuestionInterface[]>([]);
 
   useEffect(() => {
-    (async () => {
-      const historyResponse = await api.getHistory()
-      if (historyResponse.status) {
-        setHistory(historyResponse.history)
-      } else {
-        toast({
-          title: "Ocorreu um erro",
-          description: historyResponse.error,
-          variant: "destructive"
-        })
-        router.push("/entrar");
-      }
-    })()
+    api.getHistory().then(({status, history}) => {
+      if(status) setHistory(history);
+    })
   }, [])
 
   return (
